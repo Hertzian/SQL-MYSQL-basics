@@ -1,0 +1,4 @@
+CREATE DATABASE join_us;
+USE join_us;
+SELECT CURDATE();
+SELECT 1+4;
