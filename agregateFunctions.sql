@@ -99,4 +99,15 @@ FROM books
 GROUP BY author_lname, author_fname
 ORDER BY pages;
 
-
+--SUM
+SELECT SUM(pages) FROM books;
+SELECT SUM(released_year) FROM books;
+-- SUM + GROUP BY
+-- Sum all pages each author has written
+SELECT author_fname, author_lname, SUM(pages)
+FROM books
+GROUP BY author_lname, author_fname;
+--
+SELECT author_fname, author_lname, SUM(released_year)
+FROM books
+GROUP BY author_lname, author_fname;
