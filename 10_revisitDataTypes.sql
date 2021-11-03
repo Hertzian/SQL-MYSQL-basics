@@ -68,3 +68,69 @@ VALUES
 -- Formatting DATES
 SELECT name, birthdate FROM people;
 SELECT name, DAY(birthdate) FROM people;
+
+-- formating Dates (and times)
+-- DAY(), Day number
+-- DAYNAME(), Day name
+-- DAYOFWEEK(), Day number of week
+-- DAYOFYEAR(), Day number of year
+-- MONTH(), Month number 
+-- MONTHNAME(), Month name
+-- HOUR(), The hour
+-- MINUTE(), The minute
+SELECT CONCAT(MONTHNAME(birthdate), ' ', DAY(birthdate), ' ', YEAR(birthdate)) FROM people;
+SELECT DATE_FORMAT(birthdate, '%M %W %D %Y') AS Fechas FROM people;
+SELECT DATE_FORMAT(birthdate, '%m / %d / %Y') AS Fechas FROM people;
+SELECT DATE_FORMAT(birthdate, '%m / %d / %Y at %h : %m') AS Fechas FROM people;
+
+-- to know the difference between dates
+-- DATEDIFF(date_1, date_2)
+SELECT DATEDIFF(NOW(), birthdate) FROM people;
+SELECT name, CONCAT(DATEDIFF(NOW(), birthdate), ' days') AS Days FROM people;
+
+-- DATE_ADD(first_date, INTERVAL <unit_to_add>)
+SELECT birthdt, DATE_ADD(birthdt, INTERVAL 1 MONTH) FROM people;
+SELECT birthdt, birthdt + INTERVAL 1 MONTH FROM people;
+SELECT birthdt, birthdt - INTERVAL 5 MONTH FROM people;
+-- To add 15 months AND 10 hours
+SELECT birthdt, birthdt + INTERVAL 15 MONTH + INTERVAL 10 HOUR FROM people;
+
+-- Timestamps
+CREATE TABLE comments (
+    content VARCHAR(100),
+    created_at TIMESTAMP DEFAULT NOW()
+);
+INSERT INTO comments (content) VALUES ('lol what a funny article');
+INSERT INTO comments (content) VALUES ('I found this offensive');
+CREATE TABLE comments2 (
+    content VARCHAR(100),
+    changed_at TIMESTAMP DEFAULT NOW() ON UPDATE CURRENT_TIMESTAMP
+);
+INSERT INTO comments2 (content) VALUES ('lol what a funny article');
+INSERT INTO comments2 (content) VALUES ('I found this offensive');
+INSERT INTO comments2 (content) VALUES ('lololololol');
+INSERT INTO comments2 (content) VALUES ('I like cats and dogs');
+UPDATE comments2 SET content='I laughted a lot' WHERE content='lololololol';
+
+CREATE TABLE inventory (
+    item_name VARCHAR(30),
+    price DECIMAL(8, 2),
+    quantity INT
+);
+
+SELECT CURTIME();
+SELECT CURDATE();
+SELECT DAY(CURDATE());
+SELECT DAYOFWEEK(NOW());
+SELECT DATE_FORMAT(NOW(),'%D'); 
+SELECT DAYNAME(NOW());
+SELECT DATE_FORMAT(NOW(),'%m/%d/%Y');
+SELECT DATE_FORMAT(CURDATE(), '%M %D at %h:%m');
+
+CREATE TABLE tweets (
+    content VARCHAR(150),
+    username VARCHAR(30),
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+INSERT INTO tweets (content, username) VALUES ('This is a tweet example...', 'lalito');
