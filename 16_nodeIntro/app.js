@@ -1,12 +1,13 @@
-const faker = require('faker');
-const mysql = require('mysql');
+const faker = require('faker')
+const mysql = require('mysql')
 
 // credentials for gorm
 const connection = mysql.createConnection({
-  host     : 'localhost',
-  user     : 'root',
-  database : 'join_us'
-});
+  host: 'localhost',
+  user: 'lalo',
+  password: 'password',
+  database: 'join_us'
+})
 
 // selecting data
 // let q = 'SELECT 1 + 1 AS solution';
@@ -21,11 +22,11 @@ const connection = mysql.createConnection({
 //   }
 //   console.log(results[0].total);
 
-  // console.log('The solution is: ', results[0].solution);
-  // console.log(results);//returns all the object
-  // console.log(results[0].time);
-  // console.log(results[0].date);
-  // console.log(results[0].now);
+// console.log('The solution is: ', results[0].solution);
+// console.log(results);//returns all the object
+// console.log(results[0].time);
+// console.log(results[0].date);
+// console.log(results[0].now);
 // });
 
 // inserting data
@@ -56,31 +57,27 @@ const connection = mysql.createConnection({
 
 // console.log(end_result);
 
-
 // this date format doesn`t work:
 // 2019-07-29T14:10:05.449Z
 // the library makes it work
 
 // bulk insert
-let data = [];
+let data = []
 for (let i = 0; i < 500; i++) {
-  data.push([
-    faker.internet.email(),
-    faker.date.past()
-  ]);
+  data.push([faker.internet.email(), faker.date.past()])
 }
-console.log(data);
+console.log(data)
 
-let q = 'INSERT INTO users (email, created_at) VALUES ?';
+let q = 'INSERT INTO users (email, created_at) VALUES ?'
 
-connection.query(q, [data], function(err, result){
-  if(err){
-    console.log(err);
-    throw err;
+connection.query(q, [data], function (err, result) {
+  if (err) {
+    console.log(err)
+    throw err
   }
-  console.log(result);
-});
+  console.log(result)
+})
 
-connection.end();
+connection.end()
 
 // excercises

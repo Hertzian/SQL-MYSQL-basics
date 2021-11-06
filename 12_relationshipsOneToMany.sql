@@ -119,10 +119,128 @@ ON customers.id = orders.customer_id
 GROUP BY customers.id
 ORDER BY total_spent;
 
+-- Right join
+SELECT first_name, last_name, order_date, amount
+FROM customers
+RIGHT JOIN orders
+ON customers.id = orders.customer_id;
+-- false insert...
+-- No longer bound by FK constraint
+INSERT INTO orders (order_date, amount, customer_id)
+VALUES
+('2017/11/05', 23.45, 45),
+(CURDATE(), 777.77, 109);
+SELECT
+    IFNULL(first_name, 'MISSING') AS first,
+    IFNULL(last_name, 'MISSING') AS last,
+    order_date,
+    amount,
+    SUM(amount)
+FROM customers
+RIGHT JOIN orders
+ON customers.id = orders.customer_id
+GROUP BY first_name, last_name;
+-- On delete cascade
+CREATE TABLE customers(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(100),
+    last_name VARCHAR(100),
+    email VARCHAR(100)
+);
+CREATE TABLE orders(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    order_date DATE,
+    amount DECIMAL(8,2),
+    customer_id INT,
+    FOREIGN KEY(customer_id) REFERENCES customers(id)
+    ON DELETE CASCADE
+);
+DELETE FROM customers WHERE email = 'george@gmail.com';
 
+-- RIGHT and LEFT joins are in escence the same
+SELECT * FROM orders
+RIGHT JOIN customers
+ON customers.id = orders.customer_id;
+-- look exactly the same
+SELECT * FROM orders
+LEFT JOIN customers
+ON customers.id = orders.customer_id;
+SELECT * FROM customers
+LEFT JOIN orders
+ON customers.id = orders.customer_id;
 
-
-
-
-
-
+-- Joins Exercise
+CREATE TABLE students(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(100)
+);
+CREATE TABLE papers(
+    title VARCHAR(100),
+    grade INT,
+    student_id INT,
+    FOREIGN KEY(student_id) REFERENCES students(id)
+    ON DELETE CASCADE
+);
+INSERT INTO students (first_name)
+VALUES
+('Caleb'),
+('Samantha'),
+('Raj'),
+('Carlos'),
+('Lisa');
+INSERT INTO papers (student_id, title, grade)
+VALUES
+(1, 'My First Book Report', 60),
+(1, 'My Second Book Report', 75),
+(2, 'Russian Lit Through The Ages', 94),
+(2, 'De Montaigne and The Art of The Essay', 98),
+(4, 'Borges and Magical Realism', 89);
+-- to see table composition
+DESCRIBE students;
+DESCRIBE papers;
+-- Results
+--
+SELECT first_name, title, grade
+FROM students
+INNER JOIN papers
+ON students.id = papers.student_id
+ORDER BY grade DESC;
+--
+SELECT first_name, title, grade
+FROM students
+LEFT JOIN papers
+ON students.id = papers.student_id;
+--
+SELECT 
+    first_name,
+    IFNULL(title, 'MISSING') AS title,
+    IFNULL(grade, 0) AS grade
+FROM students
+LEFT JOIN papers
+ON students.id = papers.student_id;
+--
+SELECT 
+    first_name,
+    IFNULL(AVG(grade), 0) AS average
+FROM students
+LEFT JOIN papers
+ON students.id = papers.student_id
+GROUP BY students.id
+ORDER BY average DESC;
+--
+SELECT 
+    first_name, 
+    IFNULL(AVG(grade), 0) AS average, 
+    CASE
+        -- This because SELECT NULL >= 75, return NULL
+        WHEN AVG(grade) IS NULL 
+            THEN 'FAILING'
+        WHEN AVG(grade) >= 75
+            THEN 'PASSING'
+        ELSE 'FAILING'
+    END AS passing_status
+FROM students
+LEFT JOIN papers
+ON students.id = papers.student_id
+GROUP BY students.id
+ORDER BY average DESC;
