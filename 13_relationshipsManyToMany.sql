@@ -71,16 +71,64 @@ ON series.id = reviews.series_id
 GROUP BY series.id
 ORDER BY avg_rating;
 
+-- Challenge 3
+SELECT first_name, last_name, rating
+FROM reviewers
+JOIN reviews
+ON reviewers.id = reviews.reviewer_id
+LIMIT 20;
 
+-- Challenge 4
+SELECT title AS unreviewed_series
+FROM series
+LEFT JOIN reviews
+ON series.id = reviews.series_id
+WHERE rating IS NULL;
 
+-- Challenge 5
+SELECT 
+genre,
+ROUND(
+    AVG(rating), 2
+)
+AS avg_rating
+FROM series
+INNER JOIN reviews
+ON series.id = reviews.series_id
+GROUP BY genre;
 
+-- Challenge 6
+SELECT 
+first_name, 
+last_name, 
+COUNT(rating) AS COUNT,
+IFNULL(MIN(rating), 0) AS MIN,
+IFNULL(MAX(rating), 0) AS MAX,
+ROUND(
+    IFNULL(AVG(rating), 0), 2
+) AS AVG,
+IF(AVG(rating) IS NULL, 'INACTIVE', 'ACTIVE') AS STATUS,
+CASE 
+    WHEN COUNT(rating) >= 10 THEN 'POWER USER'
+    WHEN COUNT(rating) < 0 THEN 'INACTIVE'
+    -- WHEN AVG(rating) IS NULL THEN 'INACTIVE'
+    -- WHEN COUNT(rating) < 1 THEN 'INACTIVE'
+    ELSE 'ACTIVE'
+END AS STATUSAURUS
+FROM reviewers
+LEFT JOIN reviews
+ON reviewers.id = reviews.reviewer_id
+GROUP BY reviewers.id;
 
-
-
-
-
-
-
+-- Challenge 7
+SELECT title, rating, CONCAT(first_name, ' ', last_name) AS reviewer
+FROM reviewers
+INNER JOIN reviews
+ON reviewers.id = reviews.reviewer_id
+INNER JOIN series
+ON series.id = reviews.series_id
+ORDER BY title
+LIMIT 15;
 
 
 
