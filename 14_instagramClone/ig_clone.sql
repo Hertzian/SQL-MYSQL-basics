@@ -97,5 +97,3 @@ INSERT INTO photo_tags(photo_id, tag_id) VALUES
 SELECT photos.image_url, users.username FROM users
 LEFT JOIN photos
 ON users.id = photos.user_id;
-
-
